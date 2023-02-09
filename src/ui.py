@@ -22,8 +22,12 @@ async def callGPT(original_message):
 
 
 async def main():
-    demo = gr.Interface(fn=callGPT, inputs=gr.TextArea(
-        label="Chat Input"), outputs=gr.TextArea(label="Chat Output"))
+    demo = gr.Interface(fn=callGPT,
+                        inputs=gr.TextArea(
+                            label="Chat Input"),
+                        outputs=gr.TextArea(label="Chat Output"),
+                        title="Chat GPT giả cầy",
+                        description="Chat GPT giả cầy - By Hoàng Code Dạo!")
     demo.launch()
 
 asyncio.run(main())
