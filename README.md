@@ -13,7 +13,8 @@ A simple ChatGPT using OpenAI's API:
 1. Copy `.env.example` to `.env` and start filling in the values as detailed below.
 2. Go to <https://beta.openai.com/account/api-keys>, create a new API key, and fill in `OPENAI_API_KEY`.
 3. Open `src/config.yaml` to customize the bot prompt and add some example conversation. Visit this repo for prompt idea: <https://github.com/f/awesome-chatgpt-prompts>.
-4. Install dependencies
+4. Or if you're too lazy to do step 3, just delete `src/config.yaml` and rename `src/config_ai.yaml` to `src/config.yaml`
+5. Install dependencies
 
     ```bash
     pip install -r requirements.txt

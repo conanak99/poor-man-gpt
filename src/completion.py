@@ -67,6 +67,5 @@ async def generate_completion_response(
             )
     except Exception as e:
         logger.exception(e)
-        return CompletionData(
-            status=CompletionResult.OTHER_ERROR, reply_text=None, status_text=str(e)
-        )
+        logger.info("Retry on server exception. Retry forever.")
+        return await generate_completion_response(messages)
