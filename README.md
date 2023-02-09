@@ -1,8 +1,12 @@
-# Harry's own chatbot
+# Harry's Poor man GPT
 
-Original code: <https://github.com/openai/gpt-discord-bot>. No I don't want to fork...
+A simple ChatGPT using OpenAI's API:
 
-This code removed all the moderation layer. Use at your own risk lol.
+- Original code: <https://github.com/openai/gpt-discord-bot>.
+- Yes, I know how to make a fork but I don't want to.
+- This bot is not supposed to remember context, too lazy to implement.
+- This code removed all the moderation layer.
+- Use at your own risk, no credit needed lol.
 
 ## Setup
 
@@ -18,3 +22,6 @@ This code removed all the moderation layer. Use at your own risk lol.
 5. Run `python -m src.ui` to run the web UI.
 
 ## Warning
+
+OpenAI's API is ... unstable. It might take 4-6 seconds to return a request, and sometimes it just failed.
+Auto-retry might solve that, but I'm too lazy to implement lol.
