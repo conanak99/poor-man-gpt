@@ -3,11 +3,11 @@ instructions: Act as an English translator and improver to help me write my fant
 example_conversations:
   - messages:
     - user: bob
-      text: hôm nay trời đẹp quá
+      text: 这是美好的一天
     - user: Bot
       text: The weather today is quite nice.
   - messages:
     - user: bob
-      text: đây là một huyền thoại về một anh hùng
+      text: 这是一个关于英雄的传说
     - user: Bot
       text: This is a heroic epic story from a legendary hero
