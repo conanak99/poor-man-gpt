@@ -1,7 +1,6 @@
 import gradio as gr
 import logging
 from src.base import Message
-import asyncio
 import src.constants  # Import ENV variables from .env
 from src.completion import generate_completion_response
 
@@ -10,24 +9,30 @@ logging.basicConfig(
 )
 
 
-async def callGPT(original_message):
+def callGPT(original_message):
+    sentences = ""
+
     messages = []
     for message in original_message.split('\n'):
         messages.append(Message(
             user="Harry", text=message))
-    response_data = await generate_completion_response(
+    response_data = generate_completion_response(
         messages=messages
     )
-    return '.\n'.join(response_data.reply_text.split('. '))
+
+    for data in response_data:
+        sentences = sentences + data.text
+        yield '.\n'.join(sentences.split('. ')).strip()
 
 
-async def main():
+def main():
     demo = gr.Interface(fn=callGPT,
-                        inputs=gr.TextArea(
-                            label="Chat Input"),
+                        inputs=gr.TextArea(label="Chat Input"),
                         outputs=gr.TextArea(label="Chat Output"),
                         title="Chat GPT giả cầy",
                         description="Chat GPT giả cầy - By Hoàng Code Dạo!")
+    demo.queue()
     demo.launch()
 
-asyncio.run(main())
+
+main()

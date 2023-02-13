@@ -24,11 +24,11 @@ class CompletionResult(Enum):
 @dataclass
 class CompletionData:
     status: CompletionResult
-    reply_text: Optional[str]
+    text: Optional[str]
     status_text: Optional[str]
 
 
-async def generate_completion_response(
+def generate_completion_response(
     messages: List[Message]
 ) -> CompletionData:
     try:
@@ -40,18 +40,20 @@ async def generate_completion_response(
             convo=Conversation(messages + [Message(MY_BOT_NAME)]),
         )
         rendered = prompt.render()
-        response = openai.Completion.create(
+        responses = openai.Completion.create(
             engine="text-davinci-003",
             prompt=rendered,
             temperature=1.0,
             top_p=0.9,
             max_tokens=512,
             stop=["<|endoftext|>"],
+            stream=True,
         )
-        reply = response.choices[0].text.strip()
-        return CompletionData(
-            status=CompletionResult.OK, reply_text=reply, status_text=None
-        )
+        for response in responses:
+            text = response.choices[0].text
+            yield CompletionData(
+                status=CompletionResult.OK, text=text, status_text=None
+            )
 
     except openai.error.InvalidRequestError as e:
         if "This model's maximum context length" in e.user_message:
@@ -67,5 +69,4 @@ async def generate_completion_response(
             )
     except Exception as e:
         logger.exception(e)
-        logger.info("Retry on server exception. Retry forever.")
-        return await generate_completion_response(messages)
+        # Retry from UI instead
