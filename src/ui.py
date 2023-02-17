@@ -9,28 +9,41 @@ logging.basicConfig(
 )
 
 
-def callGPT(original_message):
-    sentences = ""
+def callGPT(original_message, history):
+    yield None, history + [(original_message, '')], history
 
     messages = []
     for message in original_message.split('\n'):
-        messages.append(Message(
-            user="Harry", text=message))
-    response_data = generate_completion_response(
-        messages=messages
-    )
+        messages.append(Message(user="Harry", text=message))
+    response_data = generate_completion_response(messages=messages)
 
+    response = ""
+    result = ""
     for data in response_data:
-        sentences = sentences + data.text
-        yield '.\n'.join(sentences.split('. ')).strip()
+        response = response + data.text
+        result = '.\n'.join(response.split('. ')).strip()
+        yield None, history + [(original_message, result)], history
+
+    history.append((original_message, result))
+    yield None, history, history
 
 
 def main():
-    demo = gr.Interface(fn=callGPT,
-                        inputs=gr.TextArea(label="Chat Input"),
-                        outputs=gr.TextArea(label="Chat Output"),
-                        title="Chat GPT giả cầy",
-                        description="Chat GPT giả cầy - By Hoàng Code Dạo!")
+    with gr.Blocks(title="Chat GPT giả cầy") as demo:
+        gr.Markdown("""
+            # Chat GPT giả cầy
+
+            Chat GPT giả cầy - By Hoàng Code Dạo!
+        """)
+        states = gr.State([])
+
+        input = gr.Textbox(label="Chat Input (Enter to submit)")
+        chatbot = gr.Chatbot(label="Chat Output")
+
+        input.submit(fn=callGPT,
+                     inputs=[input, states],
+                     outputs=[input, chatbot, states])
+
     demo.queue()
     demo.launch()
 
