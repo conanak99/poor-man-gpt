@@ -23,7 +23,7 @@ def callGPT(original_message, history):
 
     yield None, history + [(original_message, '')], history
 
-    response_data = generate_completion_response(original_message)
+    response_data = generate_completion_response(history, original_message)
 
     response, result = "", ""
     for data in response_data:
@@ -38,9 +38,9 @@ def callGPT(original_message, history):
 def main():
     with gr.Blocks(title="Chat GPT giả cầy") as demo:
         gr.Markdown("""
-            # Chat GPT giả cầy
+            # GPT AI?
 
-            Chat GPT giả cầy - By Hoàng Code Dạo!
+            GPT API demo!
         """)
         states = gr.State([])
 

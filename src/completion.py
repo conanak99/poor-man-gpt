@@ -24,14 +24,22 @@ class CompletionData:
 
 
 def generate_completion_response(
+    history,
     message: str
 ) -> CompletionData:
     try:
-
         messages = [{"role": "system", "content": BOT_INSTRUCTIONS}]
         for convo in EXAMPLE_CONVOS:
             messages = messages + convo.render()
-        messages.append({"role": "user", "content": message})
+
+        for mes in history:
+            messages = messages + [
+                {"role": "user", "content": mes[0]},
+                {"role": "assistant", "content": mes[1]}
+            ]
+
+        messages = messages + [{"role": "user", "content": message}]
+        print(messages)
 
         responses = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
