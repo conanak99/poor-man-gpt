@@ -26,6 +26,14 @@ A simple ChatGPT using OpenAI's API:
 
 6. Run `python -m src.ui` to run the web UI.
 
+## New API
+
+1. A new implementation of this using the new API can be found at: [new-api branch](https://github.com/conanak99/poor-man-gpt/tree/new-api)
+2. There is some censored, moderator build in for that API, so it's not suitable for workflow that involve adult, violence stuffs lol
+3. Sometimes I wish AI should not tell us what is moral and what is ethical lol.
+
+![Screenshot](./imgs/censor_ai.png)
+
 ## TODO
 
 - This bot does not remember the context of past conversations. To implement this, you can include past conversations into the request.

@@ -12,11 +12,8 @@ logging.basicConfig(
 
 
 def callGPT(original_message, history):
-    messages = []
-    for message in original_message.split('\n'):
-        messages.append(Message(user="Harry", text=message))
-
     # Keep linebreak
+    text = original_message
     original_message = original_message.replace('\n', '<br>')
 
     if TEST_MODE:
@@ -28,7 +25,8 @@ def callGPT(original_message, history):
 
     yield None, history + [(original_message, '')], history
 
-    response_data = generate_completion_response(messages=messages)
+    response_data = generate_completion_response(
+        messages=[Message(user="bob", text=text)])
 
     response, result = "", ""
     for data in response_data:
