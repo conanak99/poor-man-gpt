@@ -4,14 +4,9 @@ import openai
 from typing import Optional, List
 from src.constants import (
     BOT_INSTRUCTIONS,
-    BOT_NAME,
     EXAMPLE_CONVOS,
 )
-from src.base import Message, Prompt, Conversation
 from src.utils import logger
-
-MY_BOT_NAME = BOT_NAME
-MY_BOT_EXAMPLE_CONVOS = EXAMPLE_CONVOS
 
 
 class CompletionResult(Enum):
@@ -29,31 +24,26 @@ class CompletionData:
 
 
 def generate_completion_response(
-    messages: List[Message]
+    message: str
 ) -> CompletionData:
     try:
-        prompt = Prompt(
-            header=Message(
-                "System", f"Instructions for {MY_BOT_NAME}: {BOT_INSTRUCTIONS}"
-            ),
-            examples=MY_BOT_EXAMPLE_CONVOS,
-            convo=Conversation(messages + [Message(MY_BOT_NAME)]),
+
+        messages = [{"role": "system", "content": BOT_INSTRUCTIONS}]
+        for convo in EXAMPLE_CONVOS:
+            messages = messages + convo.render()
+        messages.append({"role": "user", "content": message})
+
+        responses = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            stream=True
         )
-        rendered = prompt.render()
-        responses = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=rendered,
-            temperature=1.0,
-            top_p=0.9,
-            max_tokens=2048,
-            stop=["<|endoftext|>"],
-            stream=True,
-        )
+
         for response in responses:
-            text = response.choices[0].text
-            yield CompletionData(
-                status=CompletionResult.OK, text=text, status_text=None
-            )
+            choice = response.choices[0]
+            if ('content' in choice.delta):
+                text = choice.delta.content
+                yield CompletionData(status=CompletionResult.OK, text=text, status_text=None)
 
     except openai.error.InvalidRequestError as e:
         if "This model's maximum context length" in e.user_message:

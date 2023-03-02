@@ -1,6 +1,5 @@
 import gradio as gr
 import logging
-from src.base import Message
 import src.constants  # Import ENV variables from .env
 from src.completion import generate_completion_response
 
@@ -12,10 +11,6 @@ logging.basicConfig(
 
 
 def callGPT(original_message, history):
-    messages = []
-    for message in original_message.split('\n'):
-        messages.append(Message(user="Harry", text=message))
-
     # Keep linebreak
     original_message = original_message.replace('\n', '<br>')
 
@@ -28,7 +23,7 @@ def callGPT(original_message, history):
 
     yield None, history + [(original_message, '')], history
 
-    response_data = generate_completion_response(messages=messages)
+    response_data = generate_completion_response(original_message)
 
     response, result = "", ""
     for data in response_data:

@@ -13,8 +13,6 @@ CONFIG: Config = dacite.from_dict(
         open(os.path.join(SCRIPT_DIR, "./../config/config.yaml"), "r"))
 )
 
-BOT_NAME = CONFIG.name
 BOT_INSTRUCTIONS = CONFIG.instructions
 EXAMPLE_CONVOS = CONFIG.example_conversations
-
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
