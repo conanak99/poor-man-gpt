@@ -45,7 +45,7 @@ def main():
         states = gr.State([])
 
         input = gr.Textbox(label="Chat Input (Enter to submit)")
-        chatbot = gr.Chatbot(label="Chat Output")
+        chatbot = gr.Chatbot(label="Bot")
 
         input.submit(fn=callGPT,
                      inputs=[input, states],

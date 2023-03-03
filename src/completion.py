@@ -24,7 +24,7 @@ class CompletionData:
 
 
 def clean_text(text: str) -> str:
-    return text.replace('<br>', '\n').replace('<em>', '*').replace('</em>', '*')
+    return text.replace('<br>', '\n').replace('<em>', '*').replace('</em>', '*').replace('&quot;', '"')
 
 
 def generate_completion_response(
