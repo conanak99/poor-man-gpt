@@ -23,6 +23,10 @@ class CompletionData:
     status_text: Optional[str]
 
 
+def clean_text(text: str) -> str:
+    return text.replace('<br>', '\n').replace('<em>', '*').replace('</em>', '*')
+
+
 def generate_completion_response(
     history,
     message: str
@@ -34,12 +38,15 @@ def generate_completion_response(
 
         for mes in history:
             messages = messages + [
-                {"role": "user", "content": mes[0]},
-                {"role": "assistant", "content": mes[1]}
+                {"role": "user", "content": clean_text(mes[0])},
+                {"role": "assistant", "content": clean_text(mes[1])}
             ]
 
-        messages = messages + [{"role": "user", "content": message}]
+        messages = messages + \
+            [{"role": "user", "content": clean_text(message)}]
         print(messages)
+
+        # TODO: Do something when this get more than 1 token lol
 
         responses = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",

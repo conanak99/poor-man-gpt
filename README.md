@@ -8,7 +8,7 @@ A simple ChatGPT using OpenAI's API:
 
 - Original code: <https://github.com/openai/gpt-discord-bot>.
 - Yes, I know how to make a fork but I don't want to.
-- This bot is not supposed to remember context, too lazy to implement.
+- The bot should remember context now, will implement something if it got more than 4000 token
 - This code removed all the moderation layer.
 - Use at your own risk, no credit needed lol.
 
@@ -25,12 +25,3 @@ A simple ChatGPT using OpenAI's API:
     ```
 
 6. Run `python -m src.ui` to run the web UI.
-
-## TODO
-
-- This bot does not remember the context of past conversations. To implement this, you can include past conversations into the request.
-- Too lazy to do that so I included the guide here, PR are welcomed.
-
-![Screenshot](./imgs/context_1.jpeg)
-
-![Screenshot](./imgs/context_2.jpeg)
