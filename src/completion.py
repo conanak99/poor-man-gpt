@@ -1,10 +1,12 @@
+import json
 from enum import Enum
 from dataclasses import dataclass
 import openai
-from typing import Optional, List
+from typing import Optional, List, Dict, Tuple
 from src.constants import (
     BOT_INSTRUCTIONS,
     EXAMPLE_CONVOS,
+    MAX_TOKEN
 )
 from src.utils import logger
 
@@ -27,29 +29,41 @@ def clean_text(text: str) -> str:
     return text.replace('<br>', '\n').replace('<em>', '*').replace('</em>', '*').replace('&quot;', '"')
 
 
-MAX_TOKEN = 1000  # Can set to 4000 to make the bot remember more, or 1000 to make it cheap
+# Chat GPT helped me write this, no shame
+def generate_massage(history: List[Tuple[str, str]], message: str) -> List[Dict[str, str]]:
+    messages = [{"role": "system", "content": BOT_INSTRUCTIONS}]
+    for convo in EXAMPLE_CONVOS:
+        messages = messages + convo.render()
+
+    # remove old messages from history to reduce token count
+    total_length = 0
+    recent_history = []
+    for mes in reversed(history):
+        conversation = [
+            {"role": "assistant", "content": clean_text(mes[1])},
+            {"role": "user", "content": clean_text(mes[0])}
+        ]
+        conversation_length = len(json.dumps(
+            conversation)) / 4  # 1 token = 4 character
+
+        if total_length + conversation_length > MAX_TOKEN:
+            break
+        recent_history += conversation
+        total_length = total_length + conversation_length
+
+    messages += recent_history[::-1]
+    messages = messages + [{"role": "user", "content": clean_text(message)}]
+    return messages
 
 
 def generate_completion_response(
-    history,
+    history: List[Tuple[str, str]],
     message: str
 ) -> CompletionData:
     try:
-        messages = [{"role": "system", "content": BOT_INSTRUCTIONS}]
-        for convo in EXAMPLE_CONVOS:
-            messages = messages + convo.render()
-
-        for mes in history:
-            messages = messages + [
-                {"role": "user", "content": clean_text(mes[0])},
-                {"role": "assistant", "content": clean_text(mes[1])}
-            ]
-
-        messages = messages + \
-            [{"role": "user", "content": clean_text(message)}]
-        print(messages)
-
-        # TODO: Do something when this get longer than 4000 tokens lol
+        messages = generate_massage(history, message)
+        print("Full token:", messages)
+        print("Token length: " + str(len(json.dumps(messages)) / 4))
 
         responses = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
