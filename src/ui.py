@@ -38,9 +38,7 @@ def callGPT(original_message, history):
 def main():
     with gr.Blocks(title="Chat GPT giả cầy") as demo:
         gr.Markdown("""
-            # GPT AI?
-
-            GPT API demo!
+            # Bot bạn gái thầy thành
         """)
         states = gr.State([])
 
@@ -52,7 +50,7 @@ def main():
                      outputs=[input, chatbot, states])
 
     demo.queue()
-    demo.launch()
+    demo.launch(share=True)
 
 
 main()
