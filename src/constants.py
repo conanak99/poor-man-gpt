@@ -10,7 +10,7 @@ load_dotenv()
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 CONFIG: Config = dacite.from_dict(
     Config, yaml.safe_load(
-        open(os.path.join(SCRIPT_DIR, "./../config/config_roleplay_akira.yaml"), "r"))
+        open(os.path.join(SCRIPT_DIR, "./../config/config_roleplay_gf_custom.yaml"), "r"))
 )
 
 BOT_INSTRUCTIONS = CONFIG.instructions
