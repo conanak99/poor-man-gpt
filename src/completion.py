@@ -27,6 +27,9 @@ def clean_text(text: str) -> str:
     return text.replace('<br>', '\n').replace('<em>', '*').replace('</em>', '*').replace('&quot;', '"')
 
 
+MAX_TOKEN = 1000  # Can set to 4000 to make the bot remember more, or 1000 to make it cheap
+
+
 def generate_completion_response(
     history,
     message: str
@@ -46,7 +49,7 @@ def generate_completion_response(
             [{"role": "user", "content": clean_text(message)}]
         print(messages)
 
-        # TODO: Do something when this get more than 1 token lol
+        # TODO: Do something when this get longer than 4000 tokens lol
 
         responses = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
