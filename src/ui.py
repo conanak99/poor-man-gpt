@@ -10,7 +10,7 @@ logging.basicConfig(
 )
 
 
-def callGPT(original_message, history):
+def callGPT(original_message, history, include_context):
     # Keep linebreak
     original_message = original_message.replace('\n', '<br>')
 
@@ -23,7 +23,8 @@ def callGPT(original_message, history):
 
     yield None, history + [(original_message, '')], history
 
-    response_data = generate_completion_response(history, original_message)
+    response_data = generate_completion_response(
+        history if include_context else [], original_message)
 
     response, result = "", ""
     for data in response_data:
@@ -38,15 +39,17 @@ def callGPT(original_message, history):
 def main():
     with gr.Blocks(title="Chat GPT giả cầy") as demo:
         gr.Markdown("""
-            # Bot bạn gái thầy thành
+            # Translate bot
         """)
         states = gr.State([])
 
+        include_context = gr.Checkbox(
+            label="Include past messages", value=False)
         input = gr.Textbox(label="Chat Input (Enter to submit)")
         chatbot = gr.Chatbot(label="Bot")
 
         input.submit(fn=callGPT,
-                     inputs=[input, states],
+                     inputs=[input, states, include_context],
                      outputs=[input, chatbot, states])
 
     demo.queue()
