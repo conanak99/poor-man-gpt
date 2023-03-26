@@ -37,9 +37,9 @@ def callGPT(original_message, history, include_context):
 
 
 def main():
-    with gr.Blocks(title="Chat GPT giả cầy") as demo:
+    with gr.Blocks(css="code {display: block}", title="Chat GPT giả cầy") as demo:
         gr.Markdown("""
-            # Translate bot
+            # GPT-chan dễ thương nhất quả đất ( ^ω^ )
         """)
         states = gr.State([])
 
@@ -53,7 +53,7 @@ def main():
                      outputs=[input, chatbot, states])
 
     demo.queue()
-    demo.launch(share=True)
+    demo.launch(share=False)
 
 
 main()
