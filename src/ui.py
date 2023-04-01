@@ -11,9 +11,6 @@ logging.basicConfig(
 
 
 def callGPT(original_message, history, include_context):
-    # Keep linebreak
-    original_message = original_message.replace('\n', '<br>')
-
     if TEST_MODE:
         # Do whatever test here
         test_message = 'hello <br> world <br> from <br> bot <br>' + original_message
@@ -29,7 +26,7 @@ def callGPT(original_message, history, include_context):
     response, result = "", ""
     for data in response_data:
         response = response + data.text
-        result = '.<br>'.join(response.split('. ')).strip()
+        result = response.strip()
         yield None, history + [(original_message, result)], history
 
     history.append((original_message, result))
@@ -41,16 +38,21 @@ def main():
         gr.Markdown("""
             # GPT-chan dễ thương nhất quả đất ( ^ω^ )
         """)
-        states = gr.State([])
 
-        include_context = gr.Checkbox(
-            label="Include past messages", value=False)
-        input = gr.Textbox(label="Chat Input (Enter to submit)")
-        chatbot = gr.Chatbot(label="Bot")
+        with gr.Row():
+            with gr.Column(scale=1):
+                gr.Image("GPT-sama.png")
+            with gr.Column(scale=7):
+                states = gr.State([])
 
-        input.submit(fn=callGPT,
-                     inputs=[input, states, include_context],
-                     outputs=[input, chatbot, states])
+                include_context = gr.Checkbox(
+                    label="Include past messages", value=False)
+                input = gr.Textbox(label="Chat Input (Enter to submit)")
+                chatbot = gr.Chatbot(label="Bot").style(height=900)
+
+                input.submit(fn=callGPT,
+                             inputs=[input, states, include_context],
+                             outputs=[input, chatbot, states])
 
     demo.queue()
     demo.launch(share=False)
