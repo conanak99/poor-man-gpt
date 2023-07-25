@@ -3,8 +3,6 @@ from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
 from typing import Optional, List, Dict, Tuple
 from src.constants import (
     BOT_INSTRUCTIONS,
-    EXAMPLE_CONVOS,
-    MAX_TOKEN
 )
 
 from src.base import CompletionData, CompletionResult
@@ -14,6 +12,8 @@ anthropic = Anthropic(
     # defaults to os.environ.get("ANTHROPIC_API_KEY")
     api_key=os.environ.get("ANTHROPIC_API_KEY"),
 )
+
+# Lol too lazy, not implement cutoff anyway
 
 
 def generate_completion_response(
