@@ -4,3 +4,4 @@ openai==0.27.*
 PyYAML==6.0
 dacite==1.6.*
 gradio==3.24.*
+anthropic==0.3.6

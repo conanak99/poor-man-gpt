@@ -2,7 +2,8 @@ import json
 from enum import Enum
 from dataclasses import dataclass
 import openai
-from typing import Optional, List, Dict, Tuple
+from typing import List, Dict, Tuple
+from src.base import CompletionData, CompletionResult
 from src.constants import (
     BOT_INSTRUCTIONS,
     EXAMPLE_CONVOS,
@@ -11,22 +12,9 @@ from src.constants import (
 from src.utils import logger
 
 
-class CompletionResult(Enum):
-    OK = 0
-    TOO_LONG = 1
-    INVALID_REQUEST = 2
-    OTHER_ERROR = 3
-
-
-@dataclass
-class CompletionData:
-    status: CompletionResult
-    text: Optional[str]
-    status_text: Optional[str]
-
-
 def clean_text(text: str) -> str:
-    return text.replace('<br>', '\n').replace('<em>', '*').replace('</em>', '*').replace('&quot;', '"')
+    return text
+    # return text.replace('<br>', '\n').replace('<em>', '*').replace('</em>', '*').replace('&quot;', '"')
 
 
 # Chat GPT helped me write this, no shame
@@ -66,7 +54,7 @@ def generate_completion_response(
         print("Token length: " + str(len(json.dumps(messages)) / 4))
 
         responses = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo-0301",
+            model="gpt-3.5-turbo",
             messages=messages,
             stream=True
         )
@@ -80,7 +68,7 @@ def generate_completion_response(
     except openai.error.InvalidRequestError as e:
         if "This model's maximum context length" in e.user_message:
             return CompletionData(
-                status=CompletionResult.TOO_LONG, reply_text=None, status_text=str(e)
+                status=CompletionResult.TOO_LONG, text=None, status_text=str(e)
             )
         else:
             logger.exception(e)
