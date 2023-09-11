@@ -21,7 +21,7 @@ def generate_completion_response(
     message: str
 ) -> CompletionData:
     try:
-        prompt = f"{BOT_INSTRUCTIONS}\n\n{HUMAN_PROMPT} {message}{AI_PROMPT}"
+        prompt = f"{BOT_INSTRUCTIONS}\n\n{HUMAN_PROMPT} {message}\n\nAssistant: Here is the translation of the text above:\n"
         stream = anthropic.completions.create(
             prompt=prompt,
             max_tokens_to_sample=800,

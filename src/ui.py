@@ -83,7 +83,7 @@ def main():
                                  gpt_states, include_context],
                          outputs=[gpt_input, chatbot, gpt_states])
 
-    demo.queue()
+    demo.queue(concurrency_count=4)
     demo.launch(share=False)
 
 
