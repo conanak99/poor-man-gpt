@@ -1,6 +1,6 @@
 import json
 import os
-import openai
+from openai import OpenAI
 from typing import List, Dict, Tuple, Generator
 from src.base import CompletionData, CompletionResult
 from src.constants import (
@@ -10,8 +10,10 @@ from src.constants import (
 )
 from src.utils import logger
 
-openai.api_base = os.environ["OPEN_API_BASE"]
-
+client = OpenAI(
+    base_url=os.environ["OPENAI_API_BASE"],
+    api_key=os.environ["OPENAI_API_KEY"],
+)
 
 def clean_text(text: str) -> str:
     return text
@@ -54,35 +56,17 @@ def generate_completion_response(
         print("Full token:", messages)
         print("Token length: " + str(len(json.dumps(messages)) / 4))
 
-        responses = openai.ChatCompletion.create(
-            # model="gpt-3.5-turbo",
-            model="gpt-4-1106-preview",
-            # model="gpt-4",
+        responses = client.chat.completions.create(
+            # model="gpt-4-1106-preview",
+            model="gpt-4",
             max_tokens=600,
             messages=messages,
             stream=True
         )
 
         for response in responses:
-            choice = response.choices[0]
-            if ('content' in choice.delta):
-                text = choice.delta.content
-                yield CompletionData(status=CompletionResult.OK, text=text, status_text=None)
-
-    except openai.error.InvalidRequestError as e:
-        if "This model's maximum context length" in e.user_message:
-            yield CompletionData(
-                status=CompletionResult.TOO_LONG, text=None, status_text=str(e)
-            )
-            return
-        else:
-            logger.exception(e)
-            yield CompletionData(
-                status=CompletionResult.INVALID_REQUEST,
-                text=None,
-                status_text=str(e),
-            )
-            return
+            text = response.choices[0].delta.content or ""
+            yield CompletionData(status=CompletionResult.OK, text=text, status_text=None)
     except Exception as e:
         logger.exception(e)
         # Retry from UI instead
