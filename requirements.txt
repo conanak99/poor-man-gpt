@@ -1,7 +1,6 @@
-discord.py==2.1.*
 python-dotenv==0.21.*
-openai==0.27.*
+openai==1.13.*
 PyYAML==6.0
-dacite==1.6.*
-gradio==3.24.*
-anthropic==0.3.6
+dacite==1.8.*
+gradio==4.20.*
+anthropic==0.19.*

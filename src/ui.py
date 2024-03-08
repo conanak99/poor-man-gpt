@@ -2,7 +2,7 @@ import gradio as gr
 import logging
 import src.constants  # Import ENV variables from .env
 from src.completion import generate_completion_response as gpt_completion
-from src.claude_completion import generate_completion_response as claude_completion
+from src.claude_completion import generate_completion_response_v2 as claude_completion
 
 TEST_MODE = False  # This should be False all the time. Only set it to true for UI testing
 
@@ -61,13 +61,12 @@ def main():
             claude_states = gr.State([])
 
             with gr.Column(scale=4):
-                claude_chatbot = gr.Chatbot(
-                    label="Claude Bot").style(height=600)
+                claude_chatbot = gr.Chatbot(label="Claude Bot", height=600)
                 claude_input = gr.Textbox(
                     label="Claude Input (Enter to submit)")
 
             with gr.Column(scale=4):
-                chatbot = gr.Chatbot(label="GPT Bot").style(height=600)
+                chatbot = gr.Chatbot(label="GPT Bot", height=600)
                 gpt_input = gr.Textbox(label="GPT Input (Enter to submit)")
 
         with gr.Row():
@@ -83,8 +82,7 @@ def main():
                                  gpt_states, include_context],
                          outputs=[gpt_input, chatbot, gpt_states])
 
-    demo.queue(concurrency_count=4)
-    demo.launch(share=False)
+    demo.launch(share=False, max_threads=4)
 
 
 main()
